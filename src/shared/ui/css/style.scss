@@ -523,3 +523,15 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+.q-time {
+  .q-time__header {
+    background: linear-gradient(
+      calc(180deg - 140deg),
+      #14a470 0.72%,
+      #149fa4 37.16%,
+      #149fa4 67.19%,
+      #1481a4 99.2%
+    );
+  }
+}

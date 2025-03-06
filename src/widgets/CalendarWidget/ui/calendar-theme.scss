@@ -1,0 +1,78 @@
+.vuecal--erp-theme {
+  --vuecal-primary-color: #23b5b5;
+  /* ---- background highlighting ----*/
+  :deep(.active-hours) {
+    background-color: rgba(75, 183, 55, 0.15);
+    border: solid rgba(77, 185, 57, 0.3);
+    border-width: 2px 0;
+  }
+  :deep(.away-hours) {
+    background-color: rgba(248, 0, 0, 0.15);
+    border: solid rgba(250, 32, 32, 0.3);
+    border-width: 2px 0;
+  }
+  :deep(.business-hours) {
+    background-color: rgba(255, 255, 0, 0.15);
+    border: solid rgba(255, 210, 0, 0.3);
+    border-width: 2px 0;
+  }
+
+  :deep(.vuecal__header) {
+    background: linear-gradient(
+      157.69deg,
+      #14a470 0.72%,
+      #149fa4 37.16%,
+      #149fa4 67.19%,
+      #1481a4 99.2%
+    );
+
+    .vuecal__view-button {
+      transition: 0s;
+      &:hover {
+        border-radius: 8px;
+      }
+      &.vuecal__view-button--active {
+        border-radius: 8px;
+        border-bottom: 0;
+        background: linear-gradient(
+          88.54deg,
+          rgba(244, 252, 255, 0.3) 1.52%,
+          rgba(246, 253, 255, 0.4) 27.54%,
+          rgba(249, 253, 255, 0.2) 65.82%,
+          rgba(255, 255, 255, 0.05) 99.69%
+        );
+      }
+    }
+  }
+
+  :deep(.vuecal__body) {
+    background-color: #eef5f5;
+    .month-view {
+      .vuecal__cell {
+        text-align: start;
+        align-items: start;
+        .vuecal__cell-content {
+          padding: 8px;
+          justify-content: start;
+        }
+      }
+    }
+
+    .vuecal__event-placeholder {
+      color: var(--vuecal-secondary-color);
+      padding: 8px;
+      margin: 0 1px;
+      border-radius: 8px;
+    }
+
+    .vuecal__event {
+      border-width: 0;
+      padding: 8px;
+      margin: 0 1px;
+      border-radius: 8px;
+      .vuecal__event-title {
+        padding-bottom: 8px;
+      }
+    }
+  }
+}

@@ -5,9 +5,11 @@ export type Activity = {
 }
 
 export type ActivityWeek = {
-  1: Activity | Activity[]
-  2: Activity | Activity[]
-  3: Activity | Activity[]
-  4: Activity | Activity[]
-  5: Activity | Activity[]
+  mon?: Activity | Activity[]
+  tue?: Activity | Activity[]
+  wed?: Activity | Activity[]
+  thu?: Activity | Activity[]
+  fri?: Activity | Activity[]
+  sat?: Activity | Activity[]
+  sun?: Activity | Activity[]
 }

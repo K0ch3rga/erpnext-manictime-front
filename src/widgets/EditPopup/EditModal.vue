@@ -7,7 +7,7 @@ import { AdvButton, AdvInput, AdvSelectInput } from '@/shared/ui'
 const props = defineProps<{ event: CalendarEvent; tags: string[] }>()
 const emits = defineEmits<{ create: [event: Partial<CalendarEvent>]; cancel: [] }>()
 
-const event = ref<Partial<CalendarEvent>>(props.event)
+const event = ref<Partial<CalendarEvent>>(JSON.parse(JSON.stringify(props.event)))
 const start = ref<string>(date.formatDate(event.value.start, 'HH:mm'))
 const end = ref<string>(date.formatDate(event.value.end, 'HH:mm'))
 
@@ -20,7 +20,6 @@ const changeStartTime = (value: string | null | number) => {
     hour: extractedDate.getHours(),
     minute: extractedDate.getMinutes(),
   })
-  event.value.startTimeMinutes = extractedDate.getHours() * 60 + extractedDate.getMinutes()
 }
 const changeEndTime = (value: string | null | number) => {
   end.value = value?.toString() ?? ''
@@ -31,14 +30,19 @@ const changeEndTime = (value: string | null | number) => {
     hour: extractedDate.getHours(),
     minute: extractedDate.getMinutes(),
   })
-  event.value.endTimeMinutes = extractedDate.getHours() * 60 + extractedDate.getMinutes()
+}
+
+const handleSubmit = () => {
+  event.value.start = new Date(Date.parse(event.value.start?.toString() ?? new Date().toString()))
+  event.value.end = new Date(Date.parse(event.value.end?.toString() ?? new Date().toString()))
+  emits('create', event.value)
 }
 </script>
 <template>
   <q-card flat class="popup">
     <q-card-section class="text-h4"> Добавление нового времени </q-card-section>
     <q-card-section>
-      <q-form greedy @submit="emits('create', event)" @reset="emits('cancel')">
+      <q-form greedy @submit="handleSubmit" @reset="() => emits('cancel')">
         <AdvSelectInput
           label="Название задачи"
           placeholder="Выберите задачу"
@@ -68,7 +72,7 @@ const changeEndTime = (value: string | null | number) => {
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-time v-model="start" format24h @update:model-value="changeStartTime">
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Close" color="primary" flat />
+                        <q-btn v-close-popup label="Закрыть" color="primary" flat />
                       </div>
                     </q-time>
                   </q-popup-proxy>

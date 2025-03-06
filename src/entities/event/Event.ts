@@ -1,25 +1,20 @@
 export type CalendarEvent = {
-  _eid: string
   start: Date
-  startTimeMinutes: number
   end: Date
-  endTimeMinutes: number
+  id: string
   title: string
-  content: string
-  background: boolean
-  allDay: boolean
-  segments: null
-  repeat: null
-  daysCount: number
-  deletable: boolean
-  deleting: boolean
-  titleEditable: boolean
-  resizable: boolean
-  resizing: boolean
   draggable: boolean
-  dragging: boolean
-  draggingStatic: boolean
-  focused: boolean
+  resizable: boolean
+  deletable: boolean
+  allDay: boolean
+  recurring: Recurring
+  schedule: number
+  background: boolean
   class: string
-  split: null
+}
+
+type Recurring = {
+  frequency: string
+  amount: number
+  start: string
 }

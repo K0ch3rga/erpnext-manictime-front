@@ -6,19 +6,16 @@ const setupErpMetods = (erpPath: string, auth: AuthVariant) => {
   const checkAuthHeader = async () => {
     if (!authHeader) {
       if ('usr' in auth && 'pwd' in auth) {
-        const response = await fetch(
-          `${erpPath}/api/method/login?usr=${auth.usr}&pwd=${auth.pwd}`,
-          {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            method: 'POST',
-            body: JSON.stringify(auth),
-            credentials: 'same-origin',
-            mode: 'no-cors',
+        const response = await fetch(`${erpPath}api/method/login?usr=${auth.usr}&pwd=${auth.pwd}`, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
           },
-        )
+          method: 'POST',
+          body: JSON.stringify(auth),
+          credentials: 'same-origin',
+          mode: 'no-cors',
+        })
           .then((r) => r.json())
           .then((r) => r as AuthenticateResponse)
           .catch(console.log)
@@ -32,7 +29,7 @@ const setupErpMetods = (erpPath: string, auth: AuthVariant) => {
 
   const getTags = async () => {
     await checkAuthHeader()
-    return await fetch(`${erpPath}/api/method/manictime_integration.api.app.get_tags`, {
+    return await fetch(`${erpPath}api/method/manictime_integration.api.app.get_tags`, {
       headers: { Authorization: authHeader },
     })
       .then((r) => r.json())
@@ -45,7 +42,7 @@ const setupErpMetods = (erpPath: string, auth: AuthVariant) => {
     query.set('from_time', fromDate.toISOString().slice(0, 10))
     if (toDate) query.set('to_time', toDate.toISOString().slice(0, 10))
     return await fetch(
-      `${erpPath}/api/method/manictime_integration.api.app.get_user_activities?${query.toString()}`,
+      `${erpPath}api/method/manictime_integration.api.app.get_user_activities?${query.toString()}`,
       {
         headers: {
           Authorization: authHeader,
@@ -62,7 +59,7 @@ const setupErpMetods = (erpPath: string, auth: AuthVariant) => {
     query.set('from_time', fromDate.toISOString().slice(0, 10))
     if (toDate) query.set('to_time', toDate.toISOString().slice(0, 10))
     return await fetch(
-      `${erpPath}/api/method/manictime_integration.api.app.get_user_usage_and_activities?${query.toString()}`,
+      `${erpPath}api/method/manictime_integration.api.app.get_user_usage_and_activities?${query.toString()}`,
       {
         headers: {
           Authorization: authHeader,
@@ -79,7 +76,7 @@ const setupErpMetods = (erpPath: string, auth: AuthVariant) => {
     timelineId: string,
   ) => {
     await checkAuthHeader()
-    return await fetch(`${erpPath}/api/method/manictime_integration.api.app.create_activity`, {
+    return await fetch(`${erpPath}api/method/manictime_integration.api.app.create_activity`, {
       headers: {
         Authorization: authHeader,
       },
@@ -95,7 +92,7 @@ const setupErpMetods = (erpPath: string, auth: AuthVariant) => {
     timelineId: string,
   ) => {
     await checkAuthHeader()
-    return await fetch(`${erpPath}/api/method/manictime_integration.api.app.create_activity`, {
+    return await fetch(`${erpPath}api/method/manictime_integration.api.app.create_activity`, {
       headers: {
         Authorization: authHeader,
       },

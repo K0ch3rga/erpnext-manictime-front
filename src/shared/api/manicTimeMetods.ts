@@ -10,7 +10,7 @@ const setupManicMethods = (manicTimePath: string, auth: ManicTimeAuth) => {
 
   const checkAuthHeader = async () => {
     if (!authHeader)
-      await fetch(`${manicTimePath}/auth/token`, {
+      await fetch(`${manicTimePath}auth/token`, {
         method: 'POST',
         mode: 'no-cors',
         headers: {
@@ -27,7 +27,7 @@ const setupManicMethods = (manicTimePath: string, auth: ManicTimeAuth) => {
   const createActivity = async (timelineId: string, activity: CreateActivityDto, sync: string) => {
     await checkAuthHeader()
 
-    return fetch(`${manicTimePath}/api/timelines/${timelineId}/activities`, {
+    return fetch(`${manicTimePath}api/timelines/${timelineId}/activities`, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Accept: 'application/vnd.manictime.v3+json',
@@ -47,7 +47,7 @@ const setupManicMethods = (manicTimePath: string, auth: ManicTimeAuth) => {
   ) => {
     await checkAuthHeader()
 
-    return fetch(`${manicTimePath}/api/timelines/${timelineId}/activities/${id}`, {
+    return fetch(`${manicTimePath}api/timelines/${timelineId}/activities/${id}`, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Accept: 'application/vnd.manictime.v3+json',

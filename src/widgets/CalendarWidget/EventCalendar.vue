@@ -5,9 +5,12 @@ import 'vue-cal/style'
 import type { CalendarEvent } from '@/entities/event'
 import type { ActivityWeek } from '@/features/activityProvider/Activity'
 import type { ViewChangeEvent } from './model/ViewChangeEvent'
-const { specialHours, events, showDialog } = defineProps<{
+import { createActivity, updateActivity } from '@/shared/api'
+const { specialHours, events, timelineId, syncId, showDialog } = defineProps<{
   specialHours: ActivityWeek
   events: CalendarEvent[]
+  timelineId: string
+  syncId: string
   showDialog: (
     event: CalendarEvent,
     onOk: (e: Partial<CalendarEvent>) => void,
@@ -25,14 +28,41 @@ const handleCreateEvent = ({
 }) =>
   showDialog(
     event,
-    (eventData: Partial<CalendarEvent>) => resolve(eventData),
+    (eventData: Partial<CalendarEvent>) => {
+      resolve(eventData)
+      createActivity(
+        timelineId,
+        {
+          name: event.title,
+          timeInterval: {
+            start: event.start,
+            duration: (event.end.getTime() - event.start.getTime()) / 1000,
+          },
+        },
+        syncId,
+      )
+    },
     () => resolve(false),
   )
 
 const handleUpdateEvent = ({ event }: { event: CalendarEvent }) => {
   showDialog(
     event,
-    (eventData: Partial<CalendarEvent>) => Object.assign(event, eventData),
+    (eventData: Partial<CalendarEvent>) => {
+      Object.assign(event, eventData)
+      updateActivity(
+        timelineId,
+        parseInt(event.id),
+        {
+          name: event.title,
+          timeInterval: {
+            start: event.start,
+            duration: (event.end.getTime() - event.start.getTime()) / 1000,
+          },
+        },
+        syncId,
+      )
+    },
     console.log,
   )
 }
@@ -54,8 +84,8 @@ const handleChangeWeek = (event: ViewChangeEvent) => emits('viewChange', event)
     @view-change="handleChangeWeek"
     @event-create="handleCreateEvent"
     @event-dblclick="handleUpdateEvent"
-    :specialHours
-    :events
+    :specialHours="specialHours"
+    :events="[...events]"
   >
     <template #header="{ view, availableViews, vuecal }">
       <div class="vuecal__header">

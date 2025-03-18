@@ -1,2 +1,2 @@
-export { getTags } from './erpMethods'
-export { createActivity, getActivities, getTimelines } from './manicTimeMetods'
+export { getTags, getActivities, getActivitiesAndUsage } from './erpMethods'
+export { createActivity, updateActivity } from './manicTimeMetods'

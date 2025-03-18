@@ -1,41 +1,77 @@
-import axios from 'axios'
 import { manicAuth, manicTimePath } from './config'
 
-const setupManicMethods = async (manicTimePath: string, auth: ManicTimeAuth) => {
+const setupManicMethods = (manicTimePath: string, auth: ManicTimeAuth) => {
   const authForm = new URLSearchParams()
   Object.entries(auth).forEach(([k, v]) => {
     authForm.append(k, v)
   })
-  const response = await axios.post<AuthResponse>(`${manicTimePath}/api/token`, auth, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/vnd.manictime.v3+json',
-    },
-  })
 
-  const authHeader = `Bearer ${response.data.token}`
-  const api = axios.create({
-    baseURL: manicTimePath,
-    headers: { Authorization: authHeader, Accept: 'application/vnd.manictime.v3+json' },
-  })
+  let authHeader = '' //`Bearer ${response.data.token}`
 
-  const getTimelines = () => api.get<GetTimelinesResponse>('/api/timelines')
+  const checkAuthHeader = async () => {
+    if (!authHeader)
+      await fetch(`${manicTimePath}/auth/token`, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Accept: 'application/vnd.manictime.v3+json',
+        },
+        body: authForm,
+      })
+        .then((res) => res.json())
+        .then((res) => res as AuthResponse)
+        .then((response) => (authHeader = response.token))
+  }
 
-  const getActivities = (timelineId: string, fromTime: Date, toTime: Date = new Date()) =>
-    api.get<GetActivitiesResponse>(
-      `/api/timelines/${timelineId}/activities?fromTime=${fromTime.toUTCString()}&toTime=${toTime}`,
-    )
+  const createActivity = async (timelineId: string, activity: CreateActivityDto, sync: string) => {
+    await checkAuthHeader()
 
-  const createActivity = (timelineId: string, activity: CreateActivityRequest) =>
-    api.post<GetActivitiesResponse>(`/api/timelines/${timelineId}/activities`, activity)
+    return fetch(`${manicTimePath}/api/timelines/${timelineId}/activities`, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/vnd.manictime.v3+json',
+        Authorization: authHeader,
+      },
+      mode: 'no-cors',
+      method: 'POST',
+      body: JSON.stringify({ expectedLastChangeId: sync, values: activity }),
+    }).then((res) => res.json())
+  }
 
-  return [getTimelines, getActivities, createActivity] as const
+  const updateActivity = async (
+    timelineId: string,
+    id: number,
+    activity: CreateActivityDto,
+    sync: string,
+  ) => {
+    await checkAuthHeader()
+
+    return fetch(`${manicTimePath}/api/timelines/${timelineId}/activities/${id}`, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/vnd.manictime.v3+json',
+        Authorization: authHeader,
+      },
+      mode: 'no-cors',
+      method: 'PUT',
+      body: JSON.stringify({ expectedLastChangeId: sync, values: activity }),
+    }).then((res) => res.json())
+  }
+
+  return [createActivity, updateActivity] as const
 }
 
-export const [getTimelines, getActivities, createActivity] = await setupManicMethods(
-  manicTimePath,
-  manicAuth,
-)
+export const [createActivity, updateActivity] = setupManicMethods(manicTimePath, manicAuth)
+
+type CreateActivityDto = {
+  name: string
+  notes?: string
+  timeInterval: {
+    start: Date
+    duration: number
+  }
+}
 
 export type ManicTimeAuth = {
   grant_type: string

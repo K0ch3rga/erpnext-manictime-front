@@ -3,12 +3,7 @@
     <div class="row justify-start">
       <span :data-test="props.dataTestLabel" v-if="!slots.topLabel">
         {{ props.label }}
-        <span
-          v-if="props.requiredSign"
-          class="text-negative"
-          style="font-size: 0.9em"
-          >*</span
-        >
+        <span v-if="props.requiredSign" class="text-negative" style="font-size: 0.9em">*</span>
       </span>
       <slot name="topLabel" />
     </div>
@@ -25,9 +20,7 @@
       :readonly="props.readonly"
       :emit-value="props.emitValue"
       :model-value="props.modelValue"
-      @update:model-value="
-        (event: typeof props.modelValue) => $emit('update:model-value', event)
-      "
+      @update:model-value="(event: typeof props.modelValue) => $emit('update:model-value', event)"
       :hint="props.hint"
       :option-label="props.optionLabel"
       :option-value="props.optionValue"
@@ -48,9 +41,9 @@
       options-dense
       map-options
       :input-style="[
-				props.readonly ? 'cursor: not-allowed':'',
-				props.disable ? 'cursor: not-allowed':''
-			]"
+        props.readonly ? 'cursor: not-allowed' : '',
+        props.disable ? 'cursor: not-allowed' : '',
+      ]"
     >
       <template v-if="slots.append" #append>
         <slot name="append" />
@@ -65,64 +58,62 @@
         <slot name="option" v-bind="scope" />
       </template>
       <template v-if="!props.modelValue && props.modelValue !== 0" #selected>
-        <div class="size-limited-selected-item"
-        :style="[
-				props.readonly ? 'cursor: not-allowed':'',
-				props.disable ? 'cursor: not-allowed':''
-			]"
+        <div
+          class="size-limited-selected-item"
+          :style="[
+            props.readonly ? 'cursor: not-allowed' : '',
+            props.disable ? 'cursor: not-allowed' : '',
+          ]"
         >
           <span
             :data-test="props.dataTestField"
-            :class="
-              !props.modelValue && props.modelValue !== 0 ? 'text-grey-6 ' : ''
-            "
+            :class="!props.modelValue && props.modelValue !== 0 ? 'text-grey-6 ' : ''"
             >{{ props.placeholder }}</span
           >
         </div>
       </template>
     </q-select>
   </div>
-
 </template>
 
 <script setup lang="ts">
-import { useQuasar, ValidationRule } from "quasar";
-import { ref, useSlots } from "vue";
-const $q = useQuasar();
-$q.iconSet.arrow.dropdown = "keyboard_arrow_down";
-const slots = useSlots();
+import { useQuasar, type ValidationRule } from 'quasar'
+import { ref, useSlots } from 'vue'
+const $q = useQuasar()
+$q.iconSet.arrow.dropdown = 'keyboard_arrow_down'
+const slots = useSlots()
 interface ISelectFieldItem {
-  label: string;
-  value: string;
+  label: string
+  value: string
 }
 
 interface ISelectField {
-  label?: string;
-  hint?: string;
-  optionLabel?: string | undefined;
-  optionValue?: string | undefined;
-  optionDisable?: string;
-  color?: string;
-  modelValue?: string | number | boolean | object | undefined | null;
-  placeholder?: string;
-  lazyRules?: boolean | "ondemand" | undefined;
-  reactiveRules?: boolean | undefined;
-  disable?: boolean;
-  readonly?: boolean;
-  emitValue?: boolean;
-  clearable?: boolean;
-  autofocus?: boolean;
-  options?: ISelectFieldItem[] | string[] | any[];
-  hideBottomSpace?: boolean;
-  rules?: ValidationRule[];
-  width?: number | undefined;
-  dataTest: string | undefined;
-  dataTestLabel?: string | undefined;
-  dataTestField?: string | undefined;
-  multiple?: boolean;
-  counter?: boolean;
-  useChips?: boolean;
-  requiredSign?: boolean;
+  label?: string
+  hint?: string
+  optionLabel?: string | undefined
+  optionValue?: string | undefined
+  optionDisable?: string
+  color?: string
+  modelValue?: string | number | boolean | object | undefined | null
+  placeholder?: string
+  lazyRules?: boolean | 'ondemand' | undefined
+  reactiveRules?: boolean | undefined
+  disable?: boolean
+  readonly?: boolean
+  emitValue?: boolean
+  clearable?: boolean
+  autofocus?: boolean
+  options?: ISelectFieldItem[] | string[] | any[]
+  hideBottomSpace?: boolean
+  rules?: ValidationRule[]
+  width?: number | undefined
+  dataTest: string | undefined
+  dataTestLabel?: string | undefined
+  dataTestField?: string | undefined
+  multiple?: boolean
+  counter?: boolean
+  useChips?: boolean
+  requiredSign?: boolean
 }
 /**
  * Поле выбора
@@ -130,13 +121,13 @@ interface ISelectField {
  * @returns {any}
  */
 const props = withDefaults(defineProps<ISelectField>(), {
-  label: "Select",
+  label: 'Select',
   hint: undefined,
   optionLabel: undefined,
   optionValue: undefined,
-  placeholder: "Select value",
-  color: "primary",
-  modelValue: "",
+  placeholder: 'Select value',
+  color: 'primary',
+  modelValue: '',
   lazyRules: false,
   reactiveRules: false,
   emitValue: false,
@@ -152,20 +143,20 @@ const props = withDefaults(defineProps<ISelectField>(), {
   useChips: false,
   rules: () => [() => true],
   requiredSign: false,
-});
+})
 
-const SelectCmpRef = ref();
+const SelectCmpRef = ref()
 
-const hidePopup= ()=>{
-  SelectCmpRef.value?.hidePopup();
+const hidePopup = () => {
+  SelectCmpRef.value?.hidePopup()
 }
-const showPopup= ()=>{
-  SelectCmpRef.value?.showPopup();
+const showPopup = () => {
+  SelectCmpRef.value?.showPopup()
 }
 
 defineExpose({
   hidePopup,
-  showPopup
+  showPopup,
 })
 </script>
 <style>

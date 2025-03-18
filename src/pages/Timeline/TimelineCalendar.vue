@@ -7,7 +7,7 @@ import { EditEventPopup } from '@widgets/EditPopup'
 import EventCalendar from '@/widgets/CalendarWidget/EventCalendar.vue'
 const $q = useQuasar()
 
-const selectedDate = ref(date.adjustDate(new Date(), { date: 2 }))
+const selectedDate = ref<Date>(date.addToDate(new Date(), { day: -new Date().getDay() + 1 }))
 const showDialog = (
   event: CalendarEvent,
   onOk: (e: Partial<CalendarEvent>) => void,
@@ -20,10 +20,15 @@ const showDialog = (
 </script>
 <template>
   <div class="container">
-    <ActivityProvider :date="selectedDate" v-slot="{ activities, events }">
+    <ActivityProvider
+      :date="selectedDate"
+      v-slot="{ activities: specialHours, events, syncId, timelineId }"
+    >
       <EventCalendar
-        :special-hours="activities"
+        :specialHours
         :events
+        :syncId
+        :timeline-id
         :show-dialog
         @view-change="(event) => (selectedDate = event.start)"
       />

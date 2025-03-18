@@ -1,68 +1,84 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { date as qDate } from 'quasar'
 import type { Activity, ActivityWeek } from './Activity'
 import type { CalendarEvent } from '@/entities/event'
-import { date as qDate } from 'quasar'
-import { getActivities, getTimelines, type Timeline } from '@/shared/api/manicTimeMetods'
-import { manicAuth } from '@/shared/api/config'
-
-// const timelines = ref<Timeline[]>([])
-// getTimelines()
-//   .then(
-//     (res) =>
-//       (timelines.value = res.data.timelines.filter((t) => t.owner.username == manicAuth.username)),
-//   )
-//   .catch(console.log)
-
-// timelines.value.forEach((t) => {
-//   getActivities(t.timelineKey, new Date()).then()
-// })
+import { getActivitiesAndUsage } from '@/shared/api'
 
 const props = defineProps<{ date: Date }>()
 
-const allActivities: ActivityWeek[] = [
-  {
-    mon: [
-      { from: 9 * 60, to: 13 * 60, class: 'active-hours' },
-      { from: 13 * 60, to: 14 * 60, class: 'away-hours' },
-      { from: 14 * 60, to: 18 * 60, class: 'active-hours' },
-    ],
-    tue: { from: 9 * 60, to: 18 * 60, class: 'away-hours' },
-    wed: [
-      { from: 9 * 60, to: 12 * 60, class: 'business-hours' },
-      { from: 14 * 60, to: 18 * 60, class: 'business-hours' },
-    ],
-    thu: { from: 9 * 60, to: 18 * 60, class: 'business-hours' },
-    fri: { from: 9 * 60, to: 18 * 60, class: 'business-hours' },
-    sat: [{ from: 8 * 60, to: 20 * 60, class: 'away-hours' }],
-    sun: [{ from: 8 * 60, to: 20 * 60, class: 'away-hours' }],
-  },
-  {
-    wed: [{ from: 9 * 60, to: 12 * 60, class: 'business-hours' }],
-  },
-  {
-    wed: [{ from: 8 * 60, to: 20 * 60, class: 'away-hours' }],
-  },
-]
+const allActivities = ref<Record<string, ActivityWeek>>({})
+const allEvents = ref<CalendarEvent[]>([])
 
-const extractWeekShift = (from: Date, to: Date = new Date()): number =>
-  Math.floor(qDate.getDateDiff(to, from) / 7)
-const shift = computed(() => {
-  console.log(props.date)
-  return extractWeekShift(props.date)
-})
+const timelineId = ref<string>('')
+const syncId = ref<string>('')
 
-const getActivity = (weekShift: number): ActivityWeek => allActivities[weekShift]
-const activities = computed<ActivityWeek>(() => getActivity(shift.value))
+const getActivity = (dataStorage: Record<string, ActivityWeek>, weekStart: Date): ActivityWeek => {
+  return dataStorage[weekStart.toDateString()] ?? {}
+}
 
-const events = ref<Partial<CalendarEvent>[]>([
-  {
-    start: new Date(),
-    end: qDate.addToDate(new Date(), { hours: 2 }),
-    title: 'default',
-  },
-])
+const getEvents = (): CalendarEvent[] => allEvents.value
+
+const activities = computed<ActivityWeek>(() => getActivity(allActivities.value, props.date))
+const events = computed<CalendarEvent[]>(() => getEvents())
+
+const dayNames = new Array<'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'>(
+  'sun',
+  'mon',
+  'tue',
+  'wed',
+  'thu',
+  'fri',
+  'sat',
+)
+
+const updateValues = async () => {
+  await getActivitiesAndUsage(qDate.addToDate(props.date, { days: -6 })).then((res) => {
+    allEvents.value = res.message.activities.map(
+      (e) =>
+        ({
+          title: e.values.name,
+          id: e.entityId,
+          start: new Date(e.values.timeInterval.start),
+          end: new Date(
+            Date.parse(e.values.timeInterval.start) + e.values.timeInterval.duration * 100 * 40, // or 60 idk
+          ),
+          class: e.values.name.split(', ')[0],
+        }) as unknown as CalendarEvent,
+    )
+
+    const collectedActivities: Record<string, ActivityWeek> = {}
+    res.message.usages.forEach((u) => {
+      const date = new Date(u.values.timeInterval.start.split('T')[0])
+      const datetime = new Date(u.values.timeInterval.start)
+      const startTime = datetime.getHours() * 60 + datetime.getMinutes()
+      const activity: Activity = {
+        from: startTime,
+        to: startTime + u.values.timeInterval.duration,
+        class:
+          u.values.name.split(' ').join('-').toLowerCase() +
+          '-hours' +
+          ' ' +
+          u.values.timeInterval.start.split('T')[0].split('-')[2],
+      }
+      const weekStart = qDate.addToDate(date, {
+        day: -(date.getDay() === 0 ? 6 : date.getDay() - 1),
+      })
+
+      if (!collectedActivities[weekStart.toDateString()])
+        collectedActivities[weekStart.toDateString()] = {}
+      const week = collectedActivities[weekStart.toDateString()]
+      const curDay = week[dayNames[date.getDay()]]
+      if (curDay) curDay.push(activity)
+      else week[dayNames[date.getDay()]] = [activity]
+    })
+    allActivities.value = collectedActivities
+  })
+}
+
+watch(() => props.date, updateValues)
+// onMounted(updateValues)
 </script>
 <template>
-  <slot :activities :events />
+  <slot :activities :events :timelineId :syncId />
 </template>

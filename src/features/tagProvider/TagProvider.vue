@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { getTags } from '@/shared/api'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
-const tags = ref<string[]>(['oleg', 'igor'])
-// getTags().then(
-//   (res) => (tags.value = res.data.message.map<string>((t) => [t.project, t.subject].join(', '))),
-// )
+const tags = ref<string[]>([])
+
+onMounted(() => {
+  getTags().then(
+    (res) => (tags.value = res.message.map<string>((t) => [t.project, t.subject].join(', '))),
+  )
+})
 </script>
 <template>
   <slot :tags />

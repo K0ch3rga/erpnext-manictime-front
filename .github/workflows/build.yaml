@@ -1,6 +1,9 @@
 name: Build and push to app
 on:
-  [push, pull_request]:
+  push:
+    branches:
+      - master # [$default-branch]
+  pull_request:
     branches:
       - master # [$default-branch]
 

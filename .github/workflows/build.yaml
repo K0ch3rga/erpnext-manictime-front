@@ -44,12 +44,17 @@ jobs:
 
       - run: |
           ls
+          echo '~~~~~~~~~~~~~~~~~~'
+          ls manictime_integration
+          echo '~~~~~~~~~~~~~~~~~~'
           ls -la ..
+          echo '~~~~~~~~~~~~~~~~~~'
+          ls -la ../erp-manictime-front
 
       - name: Change erprepo files
         run: |
           rm -r manictime_integration/public/*
-          cp -t ../erp-manictime-front/dist/ manictime_integration/public/*
+          cp -r ../erp-manictime-front/dist/* manictime_integration/public/*
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7

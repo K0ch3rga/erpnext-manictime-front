@@ -1,1 +1,7 @@
-export { getTags, getActivities, getActivitiesAndUsage } from './erpMethods'
+export {
+  getTags,
+  getActivities,
+  getActivitiesAndUsage,
+  createActivity,
+  updateActivity,
+} from './erpMethods'

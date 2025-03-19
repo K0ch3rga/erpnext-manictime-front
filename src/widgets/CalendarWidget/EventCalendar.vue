@@ -31,7 +31,6 @@ const handleCreateEvent = ({
     (eventData: Partial<CalendarEvent>) => {
       resolve(eventData)
       createActivity(
-        timelineId,
         {
           name: event.title,
           timeInterval: {
@@ -40,6 +39,7 @@ const handleCreateEvent = ({
           },
         },
         syncId,
+        timelineId,
       )
     },
     () => resolve(false),
@@ -51,8 +51,6 @@ const handleUpdateEvent = ({ event }: { event: CalendarEvent }) => {
     (eventData: Partial<CalendarEvent>) => {
       Object.assign(event, eventData)
       updateActivity(
-        timelineId,
-        parseInt(event.id),
         {
           name: event.title,
           timeInterval: {
@@ -61,6 +59,8 @@ const handleUpdateEvent = ({ event }: { event: CalendarEvent }) => {
           },
         },
         syncId,
+        timelineId,
+        parseInt(event.id),
       )
     },
     console.log,

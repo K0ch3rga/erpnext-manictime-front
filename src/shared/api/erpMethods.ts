@@ -90,13 +90,19 @@ const setupErpMetods = (erpPath: string, auth: AuthVariant) => {
     newActivity: NewActivityDto,
     syncId: string,
     timelineId: string,
+    activityId: number,
   ) => {
     await checkAuthHeader()
     return await fetch(`${erpPath}api/method/manictime_integration.api.app.create_activity`, {
       headers: {
         Authorization: authHeader,
       },
-      body: JSON.stringify({ expectedLastChangeId: syncId, values: newActivity, timelineId }),
+      body: JSON.stringify({
+        expectedLastChangeId: syncId,
+        values: newActivity,
+        timelineId,
+        activityId,
+      }),
     })
       .then((r) => r.json())
       .then((r) => r as GetActivitiesResponse)
@@ -124,7 +130,8 @@ export type PasswordAuth = {
 }
 export type AuthVariant = PasswordAuth | AppSecret
 
-export const [getTags, getActivities, getActivitiesAndUsage] = setupErpMetods(erpPath, auth)
+export const [getTags, getActivities, getActivitiesAndUsage, createActivity, updateActivity] =
+  setupErpMetods(erpPath, auth)
 
 export type GetTagsResponse = {
   message: TaskDto[]

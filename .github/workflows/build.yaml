@@ -32,6 +32,7 @@ jobs:
           bash ./.github/workflows/change-links.sh '/assets' '/assets/manictime_integration'
 
       - run: |
+          ls -la
           cd ..
           ls -la
 
@@ -41,7 +42,9 @@ jobs:
           token: ${{ secrets.erpapp_pat }}
           repository: K0ch3rga/erpnext-manictime-erpapp
 
-      - run: ls
+      - run: |
+          ls
+          ls -la ..
 
       - name: Change erprepo files
         run: |

@@ -29,7 +29,7 @@ jobs:
       - name: Change assets paths
         run: |
           chmod +x ./.github/workflows/change-links.sh
-          bash ./.github/workflows/change-links.sh
+          bash ./.github/workflows/change-links.sh '/assets' '/assets/manictime_integration'
 
       - run: cd ..
 

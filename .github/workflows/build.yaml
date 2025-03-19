@@ -35,7 +35,7 @@ jobs:
         run: |
           ls -la
           mkdir -v ../dist
-          cp -rv dist/* ../dist/
+          find ../dist/ -type f -exec cp {} dist \;
           cd ..
           ls -la
 

@@ -17,7 +17,7 @@ jobs:
       - name: Use Node.js 22.11
         uses: actions/setup-node@v4
         with:
-          node-version: 22.11
+          node-version: 22
           cache: 'npm'
 
       - run: npm ci
@@ -36,7 +36,6 @@ jobs:
           mkdir -v ../dist
           find dist -type f -exec cp {} ../dist \;
           cd ..
-          ls -la dist
 
       - name: Clone erpapp repo
         uses: actions/checkout@v4
@@ -49,7 +48,8 @@ jobs:
           rm -r manictime_integration/public/*
           cp -f ../dist/* manictime_integration/public/
 
-      - if: failure()
+      - name: Log project structure if failed
+        if: failure()
         run: |
           echo '~~~~~~~~~~ root dir ~~~~~~~~~~'
           ls -la ..
@@ -65,5 +65,4 @@ jobs:
         with:
           sign-commits: true
           assignees: K0ch3rga
-          reviewers: K0ch3rga
           token: ${{ secrets.erpapp_pat }}

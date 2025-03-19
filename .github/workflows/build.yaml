@@ -31,7 +31,9 @@ jobs:
           chmod +x ./.github/workflows/change-links.sh
           bash ./.github/workflows/change-links.sh '/assets' '/assets/manictime_integration'
 
-      - run: cd ..
+      - run: |
+          cd ..
+          ls -la
 
       - name: Clone erpapp repo
         uses: actions/checkout@v4
@@ -43,6 +45,8 @@ jobs:
         run: |
           rm -r manictime_integration/public/*
           cp -t ../erp-manictime-front/dist/* manictime_integration/public/*
+
+      - run: ls
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7

@@ -33,11 +33,10 @@ jobs:
 
       - name: Copy dest folder
         run: |
-          ls -la
           mkdir -v ../dist
-          find ../dist/ -type f -exec cp {} dist \;
+          find dist -type f -exec cp {} ../dist \;
           cd ..
-          ls -la
+          ls -la dist
 
       - name: Clone erpapp repo
         uses: actions/checkout@v4
@@ -45,19 +44,21 @@ jobs:
           token: ${{ secrets.erpapp_pat }}
           repository: K0ch3rga/erpnext-manictime-erpapp
 
-      - run: |
-          ls
-          echo '~~~~~~~~~~~~~~~~~~'
-          ls manictime_integration
-          echo '~~~~~~~~~~~~~~~~~~'
-          ls -la ..
-          echo '~~~~~~~~~~~~~~~~~~'
-          ls -la ../erp-manictime-front
-
       - name: Change erprepo files
         run: |
           rm -r manictime_integration/public/*
           cp -f ../dist/* manictime_integration/public/
+
+      - if: failure()
+        run: |
+          echo '~~~~~~~~~~ root dir ~~~~~~~~~~'
+          ls -la ..
+          echo '~~~~~~~~~~ erp dir ~~~~~~~~~~'
+          ls -la
+          echo '~~~~~~~~~~ erp app dir ~~~~~~~~~~'
+          ls -la manictime_integration
+          echo '~~~~~~~~~~ dist dir ~~~~~~~~~~'
+          ls -la manictime_integration/dist
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7

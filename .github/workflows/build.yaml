@@ -41,12 +41,12 @@ jobs:
           token: ${{ secrets.erpapp_pat }}
           repository: K0ch3rga/erpnext-manictime-erpapp
 
+      - run: ls
+
       - name: Change erprepo files
         run: |
           rm -r manictime_integration/public/*
           cp -t ../erp-manictime-front/dist/* manictime_integration/public/*
-
-      - run: ls
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7

@@ -31,8 +31,10 @@ jobs:
           chmod +x ./.github/workflows/change-links.sh
           bash ./.github/workflows/change-links.sh '/assets' '/assets/manictime_integration'
 
-      - run: |
+      - name: Copy dest folder
+        run: |
           ls -la
+          cp -r dist/* ../dist/
           cd ..
           ls -la
 
@@ -49,7 +51,7 @@ jobs:
       - name: Change erprepo files
         run: |
           rm -r manictime_integration/public/*
-          cp -t ../erp-manictime-front/dist/ manictime_integration/public/*
+          cp ../dist manictime_integration/public/
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7

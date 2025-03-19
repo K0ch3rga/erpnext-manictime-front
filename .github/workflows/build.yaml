@@ -57,7 +57,7 @@ jobs:
       - name: Change erprepo files
         run: |
           rm -r manictime_integration/public/*
-          cp ../dist manictime_integration/public/
+          cp ../dist/* manictime_integration/public/
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7

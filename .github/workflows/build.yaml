@@ -31,7 +31,7 @@ jobs:
           chmod +x ./.github/workflows/change-links.sh
           cd dist
           bash ../.github/workflows/change-links.sh '/assets' '/assets/manictime_integration'
-          sed -n '14,15p;16q' index
+          sed -n '14,15p;16q' index.html
           cd ..
 
       - name: Copy dest folder

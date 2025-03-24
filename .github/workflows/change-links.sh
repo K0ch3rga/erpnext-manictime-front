@@ -16,12 +16,11 @@ PATTERN="(src|href)=[\"']${OLD_PATH}/[^\"']*[\"']"
 # Process each HTML file
 for file in *.html; do
     if [ -f "$file" ]; then
+        echo "Updating: $file"
         # Create backup
         cp "$file" "${file}.bak"
         
         # Update paths using sed
         sed -i "s/${PATTERN}/\1=${NEW_PATH}\//g" "$file"
-        
-        echo "Updated: $file"
     fi
 done

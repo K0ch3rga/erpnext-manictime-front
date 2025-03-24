@@ -11,7 +11,7 @@ OLD_PATH=$1
 NEW_PATH=$2
 
 # Pattern to match script and style tags
-PATTERN="(src|href)=[\"']${OLD_PATH}/[^\"']*[\"']"
+PATTERN= "(src|href)=\"[^\"]*/${OLD_PATH}" 
 
 # Process each HTML file
 for file in *.html; do
@@ -21,6 +21,6 @@ for file in *.html; do
         cp "$file" "${file}.bak"
         
         # Update paths using sed
-        sed -i "s@${PATTERN}@&/=${NEW_PATH}\/@g" "$file"
+        sed -i -E "/<(script|link)/ s ${PATTERN} \1=\"${NEW_PATH} g" "$file"
     fi
 done

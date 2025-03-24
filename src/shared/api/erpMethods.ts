@@ -34,6 +34,7 @@ export const createActivity = async (
   timelineId: string,
 ) =>
   await fetch(`${erpPath}api/method/manictime_integration.api.app.create_activity`, {
+    method: 'POST',
     body: JSON.stringify({ expectedLastChangeId: syncId, values: newActivity, timelineId }),
   })
     .then((r) => r.json())
@@ -46,6 +47,7 @@ export const updateActivity = async (
   activityId: number,
 ) =>
   await fetch(`${erpPath}api/method/manictime_integration.api.app.create_activity`, {
+    method: 'PUT',
     body: JSON.stringify({
       expectedLastChangeId: syncId,
       values: newActivity,

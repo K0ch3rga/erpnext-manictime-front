@@ -21,6 +21,6 @@ for file in *.html; do
         cp "$file" "${file}.bak"
         
         # Update paths using sed
-        sed -i "s@${PATTERN}@\1=${NEW_PATH}\/@g" "$file"
+        sed -i "s@${PATTERN}@&/=${NEW_PATH}\/@g" "$file"
     fi
 done

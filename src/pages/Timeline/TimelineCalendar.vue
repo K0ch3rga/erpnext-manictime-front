@@ -30,7 +30,11 @@ const showDialog = (
         :syncId
         :timeline-id
         :show-dialog
-        @view-change="(event) => (selectedDate = event.start)"
+        @view-change="(event) =>
+            event.id == 'week'
+              ? (selectedDate = event.start)
+              : (selectedDate = new Date(new Date().setFullYear(1971)))
+        "
       />
     </ActivityProvider>
   </div>

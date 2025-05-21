@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { date as qDate } from 'quasar'
 import type { Activity, ActivityWeek } from './Activity'
 import type { CalendarEvent } from '@/entities/event'
@@ -33,20 +33,20 @@ const dayNames = new Array<'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'
 )
 
 const updateValues = async () => {
-  await getActivitiesAndUsage(qDate.addToDate(props.date, { days: -6 }))
-    .then((res) => {
-      allEvents.value = res.message.activities.map(
-        (e) =>
-          ({
-            title: e.values.name,
-            id: e.entityId,
-            start: new Date(e.values.timeInterval.start),
-            end: new Date(
-              Date.parse(e.values.timeInterval.start) + e.values.timeInterval.duration * 100 * 40, // or 60 idk
-            ),
-            class: e.values.name.split(', ')[0],
-          }) as unknown as CalendarEvent,
-      )
+  await getActivitiesAndUsage(qDate.addToDate(props.date, { days: -6 })).then((res) => {
+    timelineId.value = res.message.timelineId
+    allEvents.value = res.message.activities.map(
+      (e) =>
+        ({
+          title: e.values.name,
+          id: e.entityId,
+          start: new Date(e.values.timeInterval.start),
+          end: new Date(
+            Date.parse(e.values.timeInterval.start) + e.values.timeInterval.duration * 100 * 40, // or 60 idk
+          ),
+          class: e.values.name.split(', ')[0],
+        }) as unknown as CalendarEvent,
+    )
 
     const collectedActivities: Record<string, ActivityWeek> = {}
     res.message.usages.forEach((u) => {
@@ -78,7 +78,7 @@ const updateValues = async () => {
 }
 
 watch(() => props.date, updateValues)
-// onMounted(updateValues)
+onMounted(updateValues)
 </script>
 <template>
   <slot :activities :events :timelineId :syncId />

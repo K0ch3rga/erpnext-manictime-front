@@ -12,6 +12,7 @@ export const getActivities = async (fromDate: Date, toDate?: Date) => {
   if (toDate) query.set('to_time', toDate.toISOString().slice(0, 10))
   return await fetch(
     `${erpPath}api/method/manictime_integration.api.app.get_user_activities?${query.toString()}`,
+    { credentials: 'include' },
   )
     .then((r) => r.json())
     .then((r) => r as GetActivitiesResponse)
@@ -35,7 +36,7 @@ export const createActivity = async (
 ) =>
   await fetch(`${erpPath}api/method/manictime_integration.api.app.create_activity`, {
     method: 'POST',
-    body: JSON.stringify({ timelineId, activity: newActivity }), //    expectedLastChangeId: syncId,
+    body: JSON.stringify({ timelineId, activity: newActivity }), // temp removed: expectedLastChangeId: syncId,
   })
     .then((r) => r.json())
     .then((r) => r as GetActivitiesResponse)
@@ -49,10 +50,10 @@ export const updateActivity = async (
   await fetch(`${erpPath}api/method/manictime_integration.api.app.create_activity`, {
     method: 'PUT',
     body: JSON.stringify({
-      expectedLastChangeId: syncId,
-      values: newActivity,
+      // expectedLastChangeId: syncId,
+      activity: newActivity,
       timelineId,
-      // activityId,
+      activityId,
     }),
   })
     .then((r) => r.json())

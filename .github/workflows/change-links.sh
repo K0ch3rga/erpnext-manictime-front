@@ -24,3 +24,13 @@ for file in *.html; do
         sed -i -E "s ${PATTERN} \\1=\"\\2${NEW_PATH} g" "$file"
     fi
 done
+
+CSS_PATTERN="(url\()([^\"]*)${OLD_PATH}"
+for css in **/*.css; do 
+    if [ -f "$css" ]; then
+        echo "Updating $css"
+        cp "$css" "${css}.bak"
+
+        sed -i -E "s ${CSS_PATTERN} \\1\\2${NEW_PATH} g" "$css"
+    fi
+done

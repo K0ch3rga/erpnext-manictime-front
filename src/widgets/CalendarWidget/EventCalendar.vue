@@ -32,7 +32,7 @@ const handleCreateEvent = ({
       resolve(eventData)
       createActivity(
         {
-          name: event.title,
+          name: eventData.title ?? 'Null',
           timeInterval: {
             start: event.start,
             duration: (event.end.getTime() - event.start.getTime()) / 1000,
